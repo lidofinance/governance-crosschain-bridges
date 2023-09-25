@@ -8,8 +8,8 @@ import {
   GreeterPayload__factory,
   LineaBridgeExecutor,
   LineaBridgeExecutor__factory,
-  MockInbox__factory,
-  MockInbox,
+  MockLineaMessageService__factory,
+  MockLineaMessageService,
 } from '../typechain';
 import {
   evmSnapshot,
@@ -32,7 +32,7 @@ let ethereumGovernanceExecutor: SignerWithAddress;
 let guardian: SignerWithAddress;
 let users: SignerWithAddress[];
 
-let arbitrumInbox: MockInbox;
+let messageService: MockLineaMessageService;
 let bridgeExecutor: LineaBridgeExecutor;
 
 const DELAY = 50;
@@ -65,6 +65,9 @@ describe('LineaBridgeExecutor', async function () {
   before(async () => {
     await hardhat.run('set-DRE');
     [user, ethereumGovernanceExecutor, guardian, ...users] = await ethers.getSigners();
+
+    // Mocking Linea Message Service
+    messageService = await new MockLineaMessageService__factory(user).deploy();
 
     bridgeExecutor = await new LineaBridgeExecutor__factory(user).deploy(
       ethereumGovernanceExecutor.address,
@@ -109,6 +112,64 @@ describe('LineaBridgeExecutor', async function () {
       await expect(bridgeExecutor.queue([], [], [], [], [])).to.be.revertedWith(
         ExecutorErrors.UnauthorizedEthereumExecutor
       );
+    });
+
+    it('Queue and execute an actions set to set a message in Greeter', async () => {
+      const greeter = await new Greeter__factory(user).deploy();
+      expect(await greeter.message()).to.be.equal('');
+
+      const NEW_MESSAGE = 'hello';
+
+      expect(await bridgeExecutor.getActionsSetCount()).to.be.equal(0);
+      await expect(bridgeExecutor.getCurrentState(0)).to.be.revertedWith(
+        ExecutorErrors.InvalidActionsSetId
+      );
+
+      const { data, encodedData } = encodeSimpleActionsSet(
+        bridgeExecutor,
+        greeter.address,
+        'setMessage(string)',
+        [NEW_MESSAGE]
+      );
+
+      const tx = await messageService
+        .connect(ethereumGovernanceExecutor)
+        .sendMessage(bridgeExecutor.address, 0, encodedData);
+      const executionTime = (await timeLatest()).add(DELAY);
+
+      expect(tx)
+        .to.emit(bridgeExecutor, 'ActionsSetQueued')
+        .withArgs(0, data[0], data[1], data[2], data[3], data[4], executionTime);
+
+      expect(await bridgeExecutor.getActionsSetCount()).to.be.equal(1);
+      expect(await bridgeExecutor.getCurrentState(0)).to.be.equal(ActionsSetState.Queued);
+
+      const actionsSet = await bridgeExecutor.getActionsSetById(0);
+      expect(actionsSet[0]).to.be.eql(data[0]);
+      expect(actionsSet[1]).to.be.eql(data[1]);
+      expect(actionsSet[2]).to.be.eql(data[2]);
+      expect(actionsSet[3]).to.be.eql(data[3]);
+      expect(actionsSet[4]).to.be.eql(data[4]);
+      expect(actionsSet[5]).to.be.eql(executionTime);
+      expect(actionsSet[6]).to.be.eql(false);
+      expect(actionsSet[7]).to.be.eql(false);
+
+      await expect(bridgeExecutor.execute(0)).to.be.revertedWith(
+        ExecutorErrors.TimelockNotFinished
+      );
+
+      await setBlocktime(executionTime.add(1).toNumber());
+      await advanceBlocks(1);
+
+      expect(await bridgeExecutor.execute(0))
+        .to.emit(bridgeExecutor, 'ActionsSetExecuted')
+        .withArgs(0, user.address, ['0x'])
+        .to.emit(greeter, 'MessageUpdated')
+        .withArgs(NEW_MESSAGE);
+
+      expect(await greeter.message()).to.be.equal(NEW_MESSAGE);
+      expect(await bridgeExecutor.getCurrentState(0)).to.be.equal(ActionsSetState.Executed);
+      expect((await bridgeExecutor.getActionsSetById(0)).executed).to.be.equal(true);
     });
   });
 });
