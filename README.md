@@ -13,7 +13,7 @@
 
 # Aave Governance Cross-Chain Bridges
 
-This repository contains smart contracts and related code for Aave cross-chain bridge executors. This is intended to extend Aave Governance on Ethereum to other networks. This repository currently contains contracts to support bridging to Polygon, Arbitrum and Optimism.
+This repository contains smart contracts and related code for Aave cross-chain bridge executors. This is intended to extend Aave Governance on Ethereum to other networks. This repository currently contains contracts to support bridging to Polygon, Arbitrum, Optimism and Linea.
 
 The core contract is the `BridgeExecutorBase`, an abstract contract that contains the logic to facilitate the queueing, delay, and execution of sets of actions on downstream networks. This base contract needs to be extended with the functionality required for cross-chain transactions on a specific downstream network.
 
@@ -218,6 +218,47 @@ Therefore, the `msg.sender` of the cross-chain transaction on Optimism is the OV
 ### Deploying the OptimismBridgeExecutor
 
 - `ovmL2CrossDomainMessenger` - the address of the OVM L2 Cross Domain Messenger contract
+- `ethereumGovernanceExecutor` - the address that will have permission to queue ActionSets. This should be the Aave Governance Executor.
+- `delay` - the time required to pass after the ActionsSet is queued, before execution
+- `gracePeriod` - once execution time passes, you can execute this until the grace period ends
+- `minimumDelay` - minimum allowed delay
+- `maximumDelay` - maximum allowed delay
+- `guardian` - the admin address of this contract with the permission to cancel ActionsSets
+
+## Linea Governance Bridge
+
+### Linea Governance Bridge Architecture
+
+![aave-linea-governance-bridge-architecture](./docs/LineaBridgeArch.png) /_ TODO _/
+
+Additional documentation around the Linea Bridging setup can be found at the links below:
+
+- [Linea Docs `Message Service`](https://docs.linea.build/architecture/bridges/message-service)
+  /_ TODO _/
+
+### Linea Bridge Contracts Functionality
+
+After going through the Aave governance, the proposal payload will be a call to the following function in the Linea Message Service contract on Ethereum:
+
+```
+    /**
+   * @notice Sends a message for transporting from the given chain.
+   * @dev This function should be called with a msg.value = _value + _fee. The fee will be paid on the destination chain.
+   * @param _to The destination address on the destination chain.
+   * @param _fee The message service fee on the origin chain.
+   * @param _calldata The calldata used by the destination message service to call the destination contract.
+   */
+  function sendMessage(
+    address _to,
+    uint256 _fee,
+    bytes calldata _calldata
+) external payable;
+```
+
+/_ TODO _/
+
+### Deploying the LineaBridgeExecutor
+
 - `ethereumGovernanceExecutor` - the address that will have permission to queue ActionSets. This should be the Aave Governance Executor.
 - `delay` - the time required to pass after the ActionsSet is queued, before execution
 - `gracePeriod` - once execution time passes, you can execute this until the grace period ends
