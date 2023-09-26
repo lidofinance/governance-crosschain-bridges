@@ -68,8 +68,10 @@ describe('LineaBridgeExecutor', async function () {
 
     // Mocking Linea Message Service
     messageService = await new MockLineaMessageService__factory(user).deploy();
+    messageService.setSender(ethereumGovernanceExecutor.address);
 
     bridgeExecutor = await new LineaBridgeExecutor__factory(user).deploy(
+      messageService.address,
       ethereumGovernanceExecutor.address,
       DELAY,
       GRACE_PERIOD,
@@ -134,7 +136,9 @@ describe('LineaBridgeExecutor', async function () {
 
       const tx = await messageService
         .connect(ethereumGovernanceExecutor)
-        .sendMessage(bridgeExecutor.address, 0, encodedData);
+        .sendMessage(bridgeExecutor.address, 0, encodedData, {
+          gasLimit: 12000000,
+        });
       const executionTime = (await timeLatest()).add(DELAY);
 
       expect(tx)

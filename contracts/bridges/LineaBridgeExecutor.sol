@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.10;
 
-// import {AddressAliasHelper} from '../dependencies/linea/AddressAliasHelper.sol';
+import {IMessageService} from '../dependencies/linea/interfaces/IMessageService.sol';
 import {L2BridgeExecutor} from './L2BridgeExecutor.sol';
 
 /**
@@ -11,9 +11,15 @@ import {L2BridgeExecutor} from './L2BridgeExecutor.sol';
  * @dev Queuing an ActionsSet into this Executor can only be done by the L2 Address Alias of the L1 EthereumGovernanceExecutor
  */
 contract LineaBridgeExecutor is L2BridgeExecutor {
+  // Address of the Linea Message Service, in charge of redirecting cross-chain transactions in L2
+  address public immutable LINEA_MESSAGE_SERVICE;
+
   /// @inheritdoc L2BridgeExecutor
   modifier onlyEthereumGovernanceExecutor() override {
-    if (msg.sender != _ethereumGovernanceExecutor) revert UnauthorizedEthereumExecutor();
+    if (
+      msg.sender != LINEA_MESSAGE_SERVICE ||
+      IMessageService(LINEA_MESSAGE_SERVICE).sender() != _ethereumGovernanceExecutor
+    ) revert UnauthorizedEthereumExecutor();
     _;
   }
 
@@ -28,6 +34,7 @@ contract LineaBridgeExecutor is L2BridgeExecutor {
    * @param guardian The address of the guardian, which can cancel queued proposals (can be zero)
    */
   constructor(
+    address lineaMessageService,
     address ethereumGovernanceExecutor,
     uint256 delay,
     uint256 gracePeriod,
@@ -44,6 +51,6 @@ contract LineaBridgeExecutor is L2BridgeExecutor {
       guardian
     )
   {
-    // Intentionally left blank
+    LINEA_MESSAGE_SERVICE = lineaMessageService;
   }
 }

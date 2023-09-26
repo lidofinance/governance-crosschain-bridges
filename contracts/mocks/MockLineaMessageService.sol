@@ -3,6 +3,7 @@ pragma solidity >=0.7.0;
 
 contract MockLineaMessageService {
   uint256 public messageNum;
+  address private _messageSender;
 
   function sendMessage(
     address destAddr,
@@ -12,5 +13,13 @@ contract MockLineaMessageService {
     bool success;
     (success, ) = destAddr.call(data);
     return messageNum;
+  }
+
+  function setSender(address sender) external payable {
+    _messageSender = sender;
+  }
+
+  function sender() external view returns (address) {
+    return _messageSender;
   }
 }
