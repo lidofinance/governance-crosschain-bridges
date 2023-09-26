@@ -163,10 +163,13 @@ abstract contract BridgeExecutorBase is IExecutorBase {
   }
 
   /// @inheritdoc IExecutorBase
-  function executeDelegateCall(
-    address target,
-    bytes calldata data
-  ) external payable override onlyThis returns (bool, bytes memory) {
+  function executeDelegateCall(address target, bytes calldata data)
+    external
+    payable
+    override
+    onlyThis
+    returns (bool, bytes memory)
+  {
     bool success;
     bytes memory resultData;
     // solium-disable-next-line security/no-call-value
@@ -208,9 +211,12 @@ abstract contract BridgeExecutorBase is IExecutorBase {
   }
 
   /// @inheritdoc IExecutorBase
-  function getActionsSetById(
-    uint256 actionsSetId
-  ) external view override returns (ActionsSet memory) {
+  function getActionsSetById(uint256 actionsSetId)
+    external
+    view
+    override
+    returns (ActionsSet memory)
+  {
     return _actionsSets[actionsSetId];
   }
 
@@ -379,10 +385,11 @@ abstract contract BridgeExecutorBase is IExecutorBase {
     if (delay > _maximumDelay) revert DelayLongerThanMax();
   }
 
-  function _verifyCallResult(
-    bool success,
-    bytes memory returnData
-  ) private pure returns (bytes memory) {
+  function _verifyCallResult(bool success, bytes memory returnData)
+    private
+    pure
+    returns (bytes memory)
+  {
     if (success) {
       return returnData;
     } else {
