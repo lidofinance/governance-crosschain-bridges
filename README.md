@@ -234,7 +234,7 @@ Therefore, the `msg.sender` of the cross-chain transaction on Optimism is the OV
 Additional documentation around the Linea Bridging setup can be found at the links below:
 
 - [Linea Docs `Message Service`](https://docs.linea.build/architecture/bridges/message-service)
-  /_ TODO _/
+- [The Linea bridge ecosystem](https://docs.linea.build/use-mainnet/bridges-of-linea#the-linea-bridge-ecosystem)
 
 ### Linea Bridge Contracts Functionality
 
@@ -242,11 +242,11 @@ After going through the Aave governance, the proposal payload will be a call to 
 
 ```
     /**
-   * @notice Sends a message for transporting from the given chain.
-   * @dev This function should be called with a msg.value = _value + _fee. The fee will be paid on the destination chain.
-   * @param _to The destination address on the destination chain.
-   * @param _fee The message service fee on the origin chain.
-   * @param _calldata The calldata used by the destination message service to call the destination contract.
+     * @notice Sends a message for transporting from the given chain.
+     * @dev This function should be called with a msg.value = _value + _fee. The fee will be paid on the destination chain.
+     * @param _to The destination address on the destination chain.
+     * @param _fee The message service fee on the origin chain.
+     * @param _calldata The calldata used by the destination message service to call the destination contract.
    */
   function sendMessage(
     address _to,
@@ -255,10 +255,19 @@ After going through the Aave governance, the proposal payload will be a call to 
 ) external payable;
 ```
 
-/_ TODO _/
+From the function above, the `_to` is the contract that will be called on Linea (in this case it is the `LineaBridgeExecutor` contract). The `_calldata` is the encoded data for the cross-chain transaction: the encoded data for `queue(targets, values, signatures, calldatas, withDelegatecalls)`. The `fee` field is the fee being paid for the message delivery.
+
+When this transaction is sent cross-chain, the `msg.sender` that sends the message to the Linea Message Service Messenger is stored in the smart contract and queryable using the following function:
+
+```
+function sender() external view returns (address);
+```
+
+Therefore, the `msg.sender` of the cross-chain transaction on Linea is the Linea Message Service contract, and the L1 sender is the Aave Governance Executor contract. For this reason, the Aave Governance Executor contract address should be provided to the `LineaBridgeExecutor` contract in the constructor. This address will be saved and used to permit the queue function so that only calls from this address can successfully queue the ActionsSet in the `BridgeExecutorBase`.
 
 ### Deploying the LineaBridgeExecutor
 
+- `lineaMessageService` - the address of the Linea Message Service contract
 - `ethereumGovernanceExecutor` - the address that will have permission to queue ActionSets. This should be the Aave Governance Executor.
 - `delay` - the time required to pass after the ActionsSet is queued, before execution
 - `gracePeriod` - once execution time passes, you can execute this until the grace period ends
