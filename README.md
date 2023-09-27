@@ -241,13 +241,13 @@ Additional documentation around the Linea Bridging setup can be found at the lin
 After going through the Aave governance, the proposal payload will be a call to the following function in the Linea Message Service contract on Ethereum:
 
 ```
-    /**
-     * @notice Sends a message for transporting from the given chain.
-     * @dev This function should be called with a msg.value = _value + _fee. The fee will be paid on the destination chain.
-     * @param _to The destination address on the destination chain.
-     * @param _fee The message service fee on the origin chain.
-     * @param _calldata The calldata used by the destination message service to call the destination contract.
-   */
+  /**
+   * @notice Sends a message for transporting from the given chain.
+   * @dev This function should be called with a msg.value = _value + _fee. The fee will be paid on the destination chain.
+   * @param _to The destination address on the destination chain.
+   * @param _fee The message service fee on the origin chain.
+   * @param _calldata The calldata used by the destination message service to call the destination contract.
+  */
   function sendMessage(
     address _to,
     uint256 _fee,
@@ -257,7 +257,7 @@ After going through the Aave governance, the proposal payload will be a call to 
 
 From the function above, the `_to` is the contract that will be called on Linea (in this case it is the `LineaBridgeExecutor` contract). The `_calldata` is the encoded data for the cross-chain transaction: the encoded data for `queue(targets, values, signatures, calldatas, withDelegatecalls)`. The `fee` field is the fee being paid for the message delivery.
 
-When this transaction is sent cross-chain, the `msg.sender` that sends the message to the Linea Message Service Messenger is stored in the smart contract and queryable using the following function:
+When this transaction is sent cross-chain, the `msg.sender` that sends the message to the Linea Message Service is stored in the smart contract and queryable using the following function:
 
 ```
 function sender() external view returns (address);
