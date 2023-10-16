@@ -6,7 +6,7 @@ import {L2BridgeExecutor} from './L2BridgeExecutor.sol';
 
 /**
  * @title LineaBridgeExecutor
- * @author Aave
+ * @author Linea
  * @notice Implementation of the Linea Bridge Executor, able to receive cross-chain transactions from Ethereum
  * @dev Queuing an ActionsSet into this Executor can only be done by the L2 Address Alias of the L1 EthereumGovernanceExecutor
  */
