@@ -160,7 +160,7 @@ const hardhatConfig: HardhatUserConfig = {
     goerli: {
       ...getCommonNetworkConfig(eEthereumNetwork.goerli, 5),
       companionNetworks: {
-        optimism: eLineaNetwork.testnet,
+        linea: eLineaNetwork.testnet,
       },
     },
     main: {

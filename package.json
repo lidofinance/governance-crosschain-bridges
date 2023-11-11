@@ -31,13 +31,16 @@
     "hardhat:optimism-testnet": "hardhat --network optimism-testnet",
     "hardhat:arbitrum": "hardhat --network arbitrum",
     "hardhat:arbitrum-testnet": "hardhat --network arbitrum-testnet",
+    "hardhat:linea": "hardhat --network linea",
+    "hardhat:linea-testnet": "hardhat --network linea-testnet",
     "deploy:gov-bridge:optimism-testnet": "npm run hardhat:optimism-testnet -- --tags 'OptimisticGov,Greeter'",
     "deploy:gov-bridge:arbitrum-testnet": "npm run hardhat:arbitrum-testnet -- --tags 'ArbitrumGov,Greeter'",
     "deploy:optimism:testnet": "hardhat --network optimism-testnet deploy --tags 'OptimisticGov'",
     "deploy:optimism:mainnet": "hardhat --network optimism deploy --tags 'OptimisticGov'",
     "deploy:arbitrum:testnet": "hardhat --network arbitrum-testnet deploy --tags 'ArbitrumGov'",
     "deploy:arbitrum:mainnet": "hardhat --network arbitrum deploy --tags 'ArbitrumGov'",
-    "deploy:linea:testnet": "hardhat --network linea-testnet deploy --tags 'LineaGov'"
+    "deploy:linea:testnet": "hardhat --network linea-testnet deploy --tags 'LineaGov'",
+    "deploy:linea:mainnet": "hardhat --network linea deploy --tags 'LineaGov'"
   },
   "devDependencies": {
     "@aave/governance-v2": "^1.0.0",

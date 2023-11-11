@@ -1,6 +1,7 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types';
 import { DeployFunction } from 'hardhat-deploy/types';
 import { ADDRESSES, CONSTANTS } from '../helpers/gov-constants';
+import { eLineaNetwork } from '../helpers/types';
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre;
@@ -13,9 +14,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   if (arbiGov) {
     log(`Reusing linea governance at: ${arbiGov.address}`);
   } else {
+    let LINEA_MESSAGE_SERVICE = ADDRESSES['L2_LINEA_MESSAGE_SERVICE_MAIN'];
+    if (hre.network.name == eLineaNetwork.testnet) {
+      LINEA_MESSAGE_SERVICE = ADDRESSES['L2_LINEA_MESSAGE_SERVICE_TESTNET'];
+    }
+
     await deploy('LineaGov', {
       args: [
-        ADDRESSES['LINEA_MESSAGE_SERVICE'],
+        LINEA_MESSAGE_SERVICE,
         ADDRESSES['LINEA_GOV_EXECUTOR'],
         CONSTANTS['DELAY'],
         CONSTANTS['GRACE_PERIOD'],
