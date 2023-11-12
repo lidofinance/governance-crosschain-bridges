@@ -36,7 +36,13 @@ import {
   MockOvmL2CrossDomainMessenger,
   MockInbox__factory,
   MockInbox,
+  MockLineaMessageService,
+  LineaBridgeExecutor,
 } from '../../typechain';
+import {
+  deployLineaBridgeExecutor,
+  deployLineaMessageService,
+} from '../../helpers/linea-contract-getters';
 
 chai.use(solidity);
 
@@ -82,8 +88,10 @@ export interface TestEnv {
   arbitrumInbox: MockInbox;
   optimismL1Messenger: MockOvmL1CrossDomainMessenger;
   optimismL2Messenger: MockOvmL2CrossDomainMessenger;
+  lineaMessageService: MockLineaMessageService;
   arbitrumBridgeExecutor: ArbitrumBridgeExecutor;
   optimismBridgeExecutor: OptimismBridgeExecutor;
+  lineaBridgeExecutor: LineaBridgeExecutor;
   proposalActions: ProposalActions[];
 }
 
@@ -206,12 +214,32 @@ const deployOptimismBridgeContracts = async (): Promise<void> => {
   );
 };
 
+const deployLineaBridgeContracts = async (): Promise<void> => {
+  const { aaveGovOwner } = testEnv;
+
+  // deploy linea messenge service
+  testEnv.lineaMessageService = await deployLineaMessageService(aaveGovOwner.signer);
+
+  // deploy linea executor
+  testEnv.lineaBridgeExecutor = await deployLineaBridgeExecutor(
+    testEnv.lineaMessageService.address,
+    testEnv.shortExecutor.address,
+    BigNumber.from(60),
+    BigNumber.from(1000),
+    BigNumber.from(15),
+    BigNumber.from(500),
+    aaveGovOwner.address,
+    aaveGovOwner.signer
+  );
+};
+
 export const setupTestEnvironment = async (): Promise<void> => {
   await setUpSigners();
   await createGovernanceContracts();
   await deployPolygonBridgeContracts();
   await deployArbitrumBridgeContracts();
   await deployOptimismBridgeContracts();
+  await deployLineaBridgeContracts();
 };
 
 export async function makeSuite(

@@ -141,7 +141,7 @@ const hardhatConfig: HardhatUserConfig = {
     forkNetwork: '137',
   },
   mocha: {
-    timeout: 100000,
+    timeout: 200000,
   },
   networks: {
     kovan: {
