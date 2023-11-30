@@ -14,7 +14,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   if (arbiGov) {
     log(`Reusing linea governance at: ${arbiGov.address}`);
   } else {
-    let LINEA_MESSAGE_SERVICE = ADDRESSES['L2_LINEA_MESSAGE_SERVICE_MAIN'];
+    let LINEA_MESSAGE_SERVICE = ADDRESSES['L2_LINEA_MESSAGE_SERVICE_MAINNET'];
     let LINEA_GOV_EXECUTOR = ADDRESSES['LINEA_GOV_EXECUTOR_MAINNET'];
     if (hre.network.name == eLineaNetwork.testnet) {
       LINEA_MESSAGE_SERVICE = ADDRESSES['L2_LINEA_MESSAGE_SERVICE_TESTNET'];
