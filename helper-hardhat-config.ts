@@ -1,6 +1,7 @@
 import {
   eArbitrumNetwork,
   eEthereumNetwork,
+  eLineaNetwork,
   eOptimismNetwork,
   ePolygonNetwork,
   eXDaiNetwork,
@@ -37,4 +38,6 @@ export const NETWORKS_RPC_URL: iParamsPerNetwork<string> = {
   [eArbitrumNetwork.arbitrumTestnet]: `https://rinkeby.arbitrum.io/rpc`,
   [eOptimismNetwork.main]: `https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [eOptimismNetwork.testnet]: `https://opt-kovan.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [eLineaNetwork.main]: `https://linea-mainnet.infura.io/v3/${INFURA_KEY}`,
+  [eLineaNetwork.testnet]: `https://linea-goerli.infura.io/v3/${INFURA_KEY}`,
 };

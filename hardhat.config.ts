@@ -24,6 +24,7 @@ import {
   eOptimismNetwork,
   ePolygonNetwork,
   eXDaiNetwork,
+  eLineaNetwork,
 } from './helpers/types';
 import { NETWORKS_RPC_URL } from './helper-hardhat-config';
 
@@ -46,6 +47,7 @@ const MAINNET_FORK = process.env.MAINNET_FORK === 'true';
 const FORKING_BLOCK_NUMBER = process.env.FORKING_BLOCK_NUMBER;
 const ARBISCAN_KEY = process.env.ARBISCAN_KEY || '';
 const OPTIMISTIC_ETHERSCAN_KEY = process.env.OPTIMISTIC_ETHERSCAN_KEY || '';
+const LINEASCAN_KEY = process.env.LINEASCAN_KEY || '';
 const TENDERLY_PROJECT = process.env.TENDERLY_PROJECT || '';
 const TENDERLY_USERNAME = process.env.TENDERLY_USERNAME || '';
 
@@ -111,7 +113,27 @@ const hardhatConfig: HardhatUserConfig = {
     apiKey: {
       optimisticEthereum: OPTIMISTIC_ETHERSCAN_KEY,
       arbitrumOne: ARBISCAN_KEY,
+      [eLineaNetwork.main]: LINEASCAN_KEY,
+      [eLineaNetwork.testnet]: LINEASCAN_KEY,
     },
+    customChains: [
+      {
+        network: eLineaNetwork.testnet,
+        chainId: 59140,
+        urls: {
+          apiURL: 'https://api-goerli.lineascan.build/api',
+          browserURL: 'https://goerli.lineascan.build/',
+        },
+      },
+      {
+        network: eLineaNetwork.main,
+        chainId: 59144,
+        urls: {
+          apiURL: 'https://api.lineascan.build/api',
+          browserURL: 'https://lineascan.build/',
+        },
+      },
+    ],
   },
   tenderly: {
     project: TENDERLY_PROJECT,
@@ -119,7 +141,7 @@ const hardhatConfig: HardhatUserConfig = {
     forkNetwork: '137',
   },
   mocha: {
-    timeout: 100000,
+    timeout: 200000,
   },
   networks: {
     kovan: {
@@ -135,12 +157,18 @@ const hardhatConfig: HardhatUserConfig = {
         arbitrum: eArbitrumNetwork.arbitrumTestnet,
       },
     },
-    goerli: getCommonNetworkConfig(eEthereumNetwork.goerli, 5),
+    goerli: {
+      ...getCommonNetworkConfig(eEthereumNetwork.goerli, 5),
+      companionNetworks: {
+        linea: eLineaNetwork.testnet,
+      },
+    },
     main: {
       ...getCommonNetworkConfig(eEthereumNetwork.main, 1),
       companionNetworks: {
         optimism: eOptimismNetwork.main,
         arbitrum: eArbitrumNetwork.arbitrum,
+        linea: eLineaNetwork.main,
       },
     },
     tenderlyMain: getCommonNetworkConfig(eEthereumNetwork.tenderlyMain, 5),
@@ -159,6 +187,13 @@ const hardhatConfig: HardhatUserConfig = {
       ...getCommonNetworkConfig(eOptimismNetwork.testnet, 69),
       companionNetworks: {
         l1: 'kovan',
+      },
+    },
+    [eLineaNetwork.main]: getCommonNetworkConfig(eLineaNetwork.main, 59144),
+    [eLineaNetwork.testnet]: {
+      ...getCommonNetworkConfig(eLineaNetwork.testnet, 59140),
+      companionNetworks: {
+        l1: 'goerli',
       },
     },
     hardhat: {

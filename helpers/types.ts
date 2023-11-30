@@ -7,7 +7,8 @@ export type eNetwork =
   | ePolygonNetwork
   | eXDaiNetwork
   | eArbitrumNetwork
-  | eOptimismNetwork;
+  | eOptimismNetwork
+  | eLineaNetwork;
 
 export enum eEthereumNetwork {
   kovan = 'kovan',
@@ -39,6 +40,11 @@ export enum eOptimismNetwork {
   testnet = 'optimism-testnet',
 }
 
+export enum eLineaNetwork {
+  main = 'linea',
+  testnet = 'linea-testnet',
+}
+
 export enum EthereumNetworkNames {
   kovan = 'kovan',
   ropsten = 'ropsten',
@@ -57,7 +63,8 @@ export type iParamsPerNetwork<T> =
   | iPolygonParamsPerNetwork<T>
   | iXDaiParamsPerNetwork<T>
   | iArbitrumParamsPerNetwork<T>
-  | iOptimismParamsPerNetwork<T>;
+  | iOptimismParamsPerNetwork<T>
+  | iLineaParamsPerNetwork<T>;
 
 export interface iParamsPerNetworkAll<T>
   extends iEthereumParamsPerNetwork<T>,
@@ -92,6 +99,11 @@ export interface iArbitrumParamsPerNetwork<T> {
 export interface iOptimismParamsPerNetwork<T> {
   [eOptimismNetwork.main]: T;
   [eOptimismNetwork.testnet]: T;
+}
+
+export interface iLineaParamsPerNetwork<T> {
+  [eLineaNetwork.main]: T;
+  [eLineaNetwork.testnet]: T;
 }
 
 export interface ObjectString {
