@@ -15,7 +15,7 @@ async function main() {
     const arbProvider = new providers.JsonRpcProvider('http://localhost:8546');
     const arbDeployer = new Wallet(testSignerPK, arbProvider);
     const arbBridgeExecutor = await new ArbitrumBridgeExecutor__factory(arbDeployer).deploy(
-      ADDRESSES['ETHEREUM_GOV_EXECUTOR'],
+      ADDRESSES['ETHEREUM_GOV_EXECUTOR_SEPOLIA'],
       CONSTANTS['DELAY'],
       CONSTANTS['GRACE_PERIOD'],
       CONSTANTS['MIN_DELAY'],
@@ -30,7 +30,7 @@ async function main() {
     const optDeployer = new Wallet(testSignerPK, optProvider);
     const arbBridgeExecutor = await new OptimismBridgeExecutor__factory(optDeployer).deploy(
       ADDRESSES['OVM_L2_MESSENGER'],
-      ADDRESSES['ETHEREUM_GOV_EXECUTOR'],
+      ADDRESSES['ETHEREUM_GOV_EXECUTOR_SEPOLIA'],
       CONSTANTS['DELAY'],
       CONSTANTS['GRACE_PERIOD'],
       CONSTANTS['MIN_DELAY'],

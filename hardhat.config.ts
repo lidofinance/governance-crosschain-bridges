@@ -111,7 +111,26 @@ const hardhatConfig: HardhatUserConfig = {
     apiKey: {
       optimisticEthereum: OPTIMISTIC_ETHERSCAN_KEY,
       arbitrumOne: ARBISCAN_KEY,
+      optimisticSepolia: OPTIMISTIC_ETHERSCAN_KEY,
     },
+    customChains: [
+      {
+        network: 'sepolia',
+        chainId: 11155111,
+        urls: {
+          apiURL: 'https://api-sepolia.etherscan.io/api',
+          browserURL: 'https://sepolia.etherscan.io',
+        },
+      },
+      {
+        network: 'optimisticSepolia',
+        chainId: 11155420,
+        urls: {
+          apiURL: 'https://api-sepolia-optimism.etherscan.io/api',
+          browserURL: 'https://sepolia-optimism.etherscan.io',
+        },
+      },
+    ],
   },
   tenderly: {
     project: TENDERLY_PROJECT,
@@ -122,16 +141,10 @@ const hardhatConfig: HardhatUserConfig = {
     timeout: 100000,
   },
   networks: {
-    kovan: {
-      ...getCommonNetworkConfig(eEthereumNetwork.kovan, 42),
+    sepolia: {
+      ...getCommonNetworkConfig(eEthereumNetwork.sepolia, 11155111),
       companionNetworks: {
         optimism: eOptimismNetwork.testnet,
-      },
-    },
-    ropsten: getCommonNetworkConfig(eEthereumNetwork.ropsten, 3),
-    rinkeby: {
-      ...getCommonNetworkConfig(eEthereumNetwork.rinkeby, 4),
-      companionNetworks: {
         arbitrum: eArbitrumNetwork.arbitrumTestnet,
       },
     },
@@ -151,14 +164,14 @@ const hardhatConfig: HardhatUserConfig = {
     [eArbitrumNetwork.arbitrumTestnet]: {
       ...getCommonNetworkConfig(eArbitrumNetwork.arbitrumTestnet, 421611),
       companionNetworks: {
-        l1: 'rinkeby',
+        l1: 'sepolia',
       },
     },
     [eOptimismNetwork.main]: getCommonNetworkConfig(eOptimismNetwork.main, 10),
     [eOptimismNetwork.testnet]: {
-      ...getCommonNetworkConfig(eOptimismNetwork.testnet, 69),
+      ...getCommonNetworkConfig(eOptimismNetwork.testnet, 11155420),
       companionNetworks: {
-        l1: 'kovan',
+        l1: 'sepolia',
       },
     },
     hardhat: {

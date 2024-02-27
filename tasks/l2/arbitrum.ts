@@ -73,16 +73,16 @@ task(
 ).setAction(async (_, hre) => {
   await hre.run('set-DRE');
 
-  if (DRE.network.name != eEthereumNetwork.rinkeby && DRE.network.name != eEthereumNetwork.main) {
-    throw new Error('Only applicable on mainnet or rinkeby where arbitrum L2 exist');
+  if (DRE.network.name != eEthereumNetwork.sepolia && DRE.network.name != eEthereumNetwork.main) {
+    throw new Error('Only applicable on mainnet or sepolia where arbitrum L2 exist');
   }
 
   const MESSAGE = 'Miguel was also here ;)';
   const GAS_PRICE_BID = parseUnits('0.5', 9);
 
   let INBOX = ADDRESSES['INBOX_MAIN'];
-  if (DRE.network.name == eEthereumNetwork.rinkeby) {
-    INBOX = ADDRESSES['INBOX_RINKEBY'];
+  if (DRE.network.name == eEthereumNetwork.sepolia) {
+    INBOX = ADDRESSES['INBOX_SEPOLIA'];
   }
 
   const { deployer: deployerAddress } = await DRE.getNamedAccounts();

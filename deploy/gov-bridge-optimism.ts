@@ -17,7 +17,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await deploy('OptimisticGov', {
       args: [
         ADDRESSES['OVM_L2_MESSENGER'],
-        ADDRESSES['ETHEREUM_GOV_EXECUTOR'],
+        ADDRESSES['ETHEREUM_GOV_EXECUTOR_SEPOLIA'],
         CONSTANTS['DELAY'],
         CONSTANTS['GRACE_PERIOD'],
         CONSTANTS['MIN_DELAY'],

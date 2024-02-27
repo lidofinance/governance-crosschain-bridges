@@ -17,16 +17,16 @@ task(
 ).setAction(async (_, hre) => {
   await hre.run('set-DRE');
 
-  if (DRE.network.name != eEthereumNetwork.kovan && DRE.network.name != eEthereumNetwork.main) {
-    throw new Error('Only applicable on mainnet or kovan where optimism L2 exist');
+  if (DRE.network.name != eEthereumNetwork.sepolia && DRE.network.name != eEthereumNetwork.main) {
+    throw new Error('Only applicable on mainnet or sepolia where optimism L2 exist');
   }
 
   const GAS_LIMIT = 1500000;
   const MESSAGE = 'Miguel was also here';
 
-  let OVM_L1_MESSENGER = ADDRESSES['OVM_L1_MESSENGER_MAIN'];
-  if (DRE.network.name == eEthereumNetwork.kovan) {
-    OVM_L1_MESSENGER = ADDRESSES['OVM_L1_MESSENGER_KOVAN'];
+  let OVM_L1_MESSENGER = ADDRESSES['OVM_L1_MESSENGER_MAINNET'];
+  if (DRE.network.name == eEthereumNetwork.sepolia) {
+    OVM_L1_MESSENGER = ADDRESSES['OVM_L1_MESSENGER_SEPOLIA'];
   }
 
   const l2 = DRE.companionNetworks['optimism'];
