@@ -23,6 +23,7 @@ import {
   eNetwork,
   eOptimismNetwork,
   ePolygonNetwork,
+  eUnichainNetwork,
   eXDaiNetwork,
 } from './helpers/types';
 import { NETWORKS_RPC_URL } from './helper-hardhat-config';
@@ -112,6 +113,7 @@ const hardhatConfig: HardhatUserConfig = {
       optimisticEthereum: OPTIMISTIC_ETHERSCAN_KEY,
       arbitrumOne: ARBISCAN_KEY,
       optimisticSepolia: OPTIMISTIC_ETHERSCAN_KEY,
+      uni_sepolia: OPTIMISTIC_ETHERSCAN_KEY,
     },
     customChains: [
       {
@@ -130,6 +132,14 @@ const hardhatConfig: HardhatUserConfig = {
           browserURL: 'https://sepolia-optimism.etherscan.io',
         },
       },
+      {
+        network: 'uni_sepolia',
+        chainId: 1301,
+        urls: {
+          apiURL: 'https://unichain-sepolia.blockscout.com/api',
+          browserURL: 'https://unichain-sepolia.blockscout.com/',
+        },
+      }
     ],
   },
   tenderly: {
@@ -141,6 +151,7 @@ const hardhatConfig: HardhatUserConfig = {
     timeout: 100000,
   },
   networks: {
+    uni_sepolia: getCommonNetworkConfig(eUnichainNetwork.testnet, 1301),
     sepolia: {
       ...getCommonNetworkConfig(eEthereumNetwork.sepolia, 11155111),
       companionNetworks: {
