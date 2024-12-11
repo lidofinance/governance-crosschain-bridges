@@ -48,6 +48,10 @@ const ARBISCAN_KEY = process.env.ARBISCAN_KEY || '';
 const OPTIMISTIC_ETHERSCAN_KEY = process.env.OPTIMISTIC_ETHERSCAN_KEY || '';
 const TENDERLY_PROJECT = process.env.TENDERLY_PROJECT || '';
 const TENDERLY_USERNAME = process.env.TENDERLY_USERNAME || '';
+const L2_BLOCK_EXPLORER_API_KEY = process.env.L2_BLOCK_EXPLORER_API_KEY || '';
+const L2_CHAIN_ID = Number(process.env.L2_CHAIN_ID);
+const L2_BLOCK_EXPLORER_API_URL = process.env.L2_BLOCK_EXPLORER_API_URL || '';
+const L2_BLOCK_EXPLORER_BROWSER_URL = process.env.L2_BLOCK_EXPLORER_BROWSER_URL || '';
 
 const getCommonNetworkConfig = (networkName: eNetwork, chainId: number) => {
   // For deployment, load the deployer account from the PRIVATE_KEY env variable
@@ -112,8 +116,17 @@ const hardhatConfig: HardhatUserConfig = {
       optimisticEthereum: OPTIMISTIC_ETHERSCAN_KEY,
       arbitrumOne: ARBISCAN_KEY,
       optimisticSepolia: OPTIMISTIC_ETHERSCAN_KEY,
+      l2: L2_BLOCK_EXPLORER_API_KEY
     },
     customChains: [
+      {
+        network: 'l2',
+        chainId: L2_CHAIN_ID,
+        urls: {
+          apiURL: L2_BLOCK_EXPLORER_API_URL,
+          browserURL: L2_BLOCK_EXPLORER_BROWSER_URL,
+        },
+      },
       {
         network: 'sepolia',
         chainId: 11155111,
