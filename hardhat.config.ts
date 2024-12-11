@@ -156,7 +156,8 @@ const hardhatConfig: HardhatUserConfig = {
   },
   networks: {
     l2: {
-      url: L2_PRC_URL
+      url: L2_PRC_URL,
+      chainId: L2_CHAIN_ID,
     },
     sepolia: {
       ...getCommonNetworkConfig(eEthereumNetwork.sepolia, 11155111),
