@@ -28,6 +28,9 @@ updates:
       # stack in maintenance (ethers 5, hardhat 2, waffle 3, ts 4) — majors handled manually, not weekly
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+      # ethereum-waffle v4 is a breaking migration tracked in #28 — also suppress security-driven ancestor bumps
+      - dependency-name: "ethereum-waffle"
+        update-types: ["version-update:semver-major"]
     labels: ["dependencies", "javascript"]
     commit-message:
       prefix: "build"
